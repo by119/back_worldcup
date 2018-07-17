@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script src="https://image.ppmiao.com/Public/js/jquery-1.10.2.min.js"></script>
+  <script src="https://image.ppmiao.com/Public/js/util.js"></script>
+  <link rel="stylesheet" href="./index.css">
+  <title>世界杯后台管理系统</title>
+</head>
+<body>
+<h3 class='title'>比赛列表</h3>
+<a class="add-btn" href="./add.html?type=add">新增比赛</a>
+<table>
+  <tr>
+    <th>序号</th>
+    <th>场次</th>
+    <th>比赛类型</th>
+    <th>开球时间</th>
+    <th>球队1</th>
+    <th>球队2</th>
+    <th>比赛结果</th>
+    <th>操作</th>
+    <th>结算</th>
+  </tr>
+  <tbody id='tbody'>
+  </tbody>
+</table>
+<script>
+  var bascUrl = "https://sailsact.ppmiao.com";
+  function init(){
+    $.ajax({
+       url: bascUrl + '/worldCupActivity2018ScheduleList',
+       data: {
+          keyName: 'world_cup_activity_2018',
+          startTime: '2018-05-12 00:00:00',
+          endTime: '2018-12-31 00:00:00'
+       },
+       type: 'POST',
+       success: function(res) {
+         if(res.code=='0'){
+            if(res.result != ''){
+              var html ='';
+              var num =1;
+              for (var i = 0; i < res.result.length; i++) {
+                html+= `
+                  <tr>
+                    <td>${num++}</td>
+                    <td>${res.result[i].id}</td>
+                    <td>${res.result[i].matchName}</td>
+                    <td>${myDate(res.result[i].startTime)}</td>
+                    <td>${res.result[i].team1Name}</td>
+                    <td>${res.result[i].team2Name}</td>
+                    <td>${whichTeam(res.result[i].status,res.result[i].team1Name,res.result[i].team2Name)}</td>
+                    <td><a class='hrefs' href="./add.html?type=reset&scheduleId=${res.result[i].id}">操作</a></td>
+                    <td onclick='recharge(${res.result[i].id})'>结算</td>
+                  </tr>
+                `
+              }
+              $('#tbody').html(html);
+            }
+         }
+       }
+    })
+  }
+  init();
+
+
+  function whichTeam(status,team1,team2){
+    if(status == -1){
+      return '-';
+    }else if (status == 1) {
+      return team1;
+    }else if (status == 2) {
+      return team2;
+    }else {
+      return '平局';
+    }
+  }
+  function recharge(obj){
+    $.ajax({
+       url: bascUrl + '/worldCupActivity2018Settlement',
+       data: {
+          scheduleId: obj
+       },
+       type: 'POST',
+       success: function(res) {
+         if(res.code=='0'){
+           alert(res.result);
+           window.location.reload();
+         }else {
+           alert(res.errorMsg);
+         }
+       }
+    })
+  }
+  function myDate(date) {
+     var dates = new Date(parseInt(date)).toLocaleString('chinese', {
+      hour12: false
+     });
+     var zz = dates.split('/');
+     if (zz.length > 1) {
+      dates = dates.replace(/\//g, "-");
+     } else {
+      dates=dates.split('年')[0]+ '-' + dates.split('年')[1].split('月')[0] + '-' + dates.split('年')[1].split('月')[1].split('日')[0] + dates.split('年')[1].split('月')[1].split('日')[1];
+     }
+     var time1 = dates.split(':')[0];
+     var time2 = time1.split('-')[1] + '-' + time1.split('-')[2];
+     dates = time2 + ':' + dates.split(':')[1];
+     return dates;
+  }
+</script>
+</body>
+</html>

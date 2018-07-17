@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>新增/编辑 比赛情况</title>
+    <link rel="stylesheet" href="./index.css">
+    <script src="https://image.ppmiao.com/Public/js/jquery-1.10.2.min.js"></script>
+  </head>
+  <body>
+    <div class="box">
+      <label for="isPeace">是否有平局：</label>
+      <select id='isPeace' class="" name="">
+        <option selected value="null">请选择</option>
+        <option value="0">有</option>
+        <option value="1">无</option>
+      </select>
+    </div>
+    <div class="box">
+      <label for="matchTypes">比赛类型：</label>
+      <select class="" id='matchTypes' name="">
+        <option selected value="null">请选择</option>
+        <option value="小组赛">小组赛</option>
+        <option value="八分之一决赛">八分之一决赛</option>
+        <option value="四分之一决赛">四分之一决赛</option>
+        <option value="半决赛">半决赛</option>
+        <option value="总决赛">总决赛</option>
+      </select>
+    </div>
+    <div class="box">
+      <label for="matchTime">开球时间：</label>
+      <input id='matchTime' type="text" name="" value="" placeholder=""><br>
+      <span class="demo">例：05-12 00:00:00</span>
+    </div>
+    <div class="box">
+      <label for="group1">球队1：</label>
+      <select class="" id='group1' name="">
+        <option selected value="null">请选择</option>
+        <option value="1">俄罗斯</option>
+        <option value="2">德国</option>
+        <option value="3">巴西</option>
+        <option value="4">葡萄牙</option>
+        <option value="5">阿根廷</option>
+        <option value="6">比利时</option>
+        <option value="7">波兰</option>
+        <option value="8">法国</option>
+        <option value="9">西班牙</option>
+        <option value="10">秘鲁</option>
+        <option value="11">瑞士</option>
+        <option value="12">英格兰</option>
+        <option value="13">哥伦比亚</option>
+        <option value="14">墨西哥</option>
+        <option value="15">乌拉圭</option>
+        <option value="16">克罗地亚</option>
+        <option value="17">丹麦</option>
+        <option value="18">冰岛</option>
+        <option value="19">哥斯达黎加</option>
+        <option value="20">瑞典</option>
+        <option value="21">突尼斯</option>
+        <option value="22">埃及</option>
+        <option value="23">塞内加尔</option>
+        <option value="24">伊朗</option>
+        <option value="25">塞尔维亚</option>
+        <option value="26">尼日利亚</option>
+        <option value="27">澳大利亚</option>
+        <option value="28">日本</option>
+        <option value="29">摩洛哥</option>
+        <option value="30">巴拿马</option>
+        <option value="31">韩国</option>
+        <option value="32">沙特</option>
+      </select>
+    </div>
+    <div class="box">
+      <label for="group2">球队2：</label>
+      <select class="" id='group2' name="">
+        <option selected value="null">请选择</option>
+        <option value="1">俄罗斯</option>
+        <option value="2">德国</option>
+        <option value="3">巴西</option>
+        <option value="4">葡萄牙</option>
+        <option value="5">阿根廷</option>
+        <option value="6">比利时</option>
+        <option value="7">波兰</option>
+        <option value="8">法国</option>
+        <option value="9">西班牙</option>
+        <option value="10">秘鲁</option>
+        <option value="11">瑞士</option>
+        <option value="12">英格兰</option>
+        <option value="13">哥伦比亚</option>
+        <option value="14">墨西哥</option>
+        <option value="15">乌拉圭</option>
+        <option value="16">克罗地亚</option>
+        <option value="17">丹麦</option>
+        <option value="18">冰岛</option>
+        <option value="19">哥斯达黎加</option>
+        <option value="20">瑞典</option>
+        <option value="21">突尼斯</option>
+        <option value="22">埃及</option>
+        <option value="23">塞内加尔</option>
+        <option value="24">伊朗</option>
+        <option value="25">塞尔维亚</option>
+        <option value="26">尼日利亚</option>
+        <option value="27">澳大利亚</option>
+        <option value="28">日本</option>
+        <option value="29">摩洛哥</option>
+        <option value="30">巴拿马</option>
+        <option value="31">韩国</option>
+        <option value="32">沙特</option>
+      </select>
+    </div>
+    <!-- 编辑才有 -->
+    <div class="box" id='whoWin'>
+      <input type="radio" name="which" value="1">球队1胜
+      <input type="radio" name="which" value="2">球队2胜
+      <input type="radio" name="which" value="0">平局
+      <input type="radio" name="which" value="-2">修改
+    </div>
+    <div class='btn-group box'>
+      <a onclick='saveMsg(0)'>保存</a>
+      <a onclick="saveMsg(1)" class="save">保存并继续添加</a>
+      <a class="cencel" href="./index.html">取消</a>
+    </div>
+
+
+    <script>
+    var bascUrl = 'https://sailsact.ppmiao.com';   //-----------
+    function GetQueryString(name) {
+    	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    	var r = window.location.search.substr(1).match(reg);
+    	if (r != null)
+    		return unescape(r[2]);
+    	return null;
+    }
+    var type = GetQueryString('type');
+    $(function(){
+      if(type == 'add'){
+        $('.cencel').css('display', 'none');
+        $('#whoWin').css('display', 'none');
+      }else {
+        $('.save').css('display', 'none');
+        var scheduleId = GetQueryString('scheduleId');
+        $.ajax({
+           url: bascUrl + '/worldCupActivity2018QueryByMatchId',
+           data: {
+              scheduleId: scheduleId
+           },
+           type: 'POST',
+           success: function(res) {
+             if(res.code=='0'){
+                var matchType = $('#isPeace').children('option');
+                var matchName = $('#matchTypes').children('option');
+                var team1 = $('#group1').children('option');
+                var team2 = $('#group2').children('option');
+                var status = $('#whoWin').children('option');
+                // 是否平局
+                for (var i = 0; i < matchType.length; i++) {
+                  if($(matchType[i]).val() == res.result.matchType){
+                    $(matchType[i]).attr('selected', 'selected');
+                  }
+                }
+                // 比赛类型
+                for (var i = 0; i < matchName.length; i++) {
+                  if($(matchName[i]).val() == res.result.matchName){
+                    $(matchName[i]).attr('selected', 'selected');
+                  }
+                }
+                // 开球时间
+                $('#matchTime').val(myDate(res.result.startTime));
+                // 球队1
+                for (var i = 0; i < team1.length; i++) {
+                  if($(team1[i]).val() == res.result.team1Id){
+                    $(team1[i]).attr('selected', 'selected');
+                  }
+                }
+                // 球队2
+                for (var i = 0; i < team2.length; i++) {
+                  if($(team2[i]).val() == res.result.team2Id){
+                    $(team2[i]).attr('selected', 'selected');
+                  }
+                }
+                // 谁赢
+                for (var i = 0; i < status.length; i++) {
+                  if($(status[i]).val() == res.result.status){
+                    $(status[i]).attr('checked', 'checked');
+                  }
+                }
+             }
+           }
+        });
+      }
+    });
+    function saveMsg(obj){
+      // 比赛名字
+      var matchName = $('#matchTypes').val();
+      // 是否有平局
+      var matchType = $('#isPeace').val();
+
+      var team1 = $('#group1').val();
+      var team2 = $('#group2').val();
+      // 开球时间
+      var startTime = $('#matchTime').val();
+      if(type == 'add'){
+        $.ajax({
+           url: bascUrl + '/worldCupActivity2018InsertMatch',
+           data: {
+              keyName: 'world_cup_activity_2018',
+              team1: team1,
+              team2: team2,
+              matchName: matchName,
+              startTime: startTime,
+              matchType: matchType
+           },
+           type: 'POST',
+           success: function(res) {
+             if(res.code=='0'){
+                if(obj==0){
+                  window.location.href='./index.html';
+                }else if(obj==1){
+                  window.location.reload();
+                }
+             }
+           }
+        });
+      }else{
+        var scheduleId = GetQueryString('scheduleId');
+        var status = $("#whoWin [type='radio']:checked").val();
+        $.ajax({
+           url: bascUrl + '/worldCupActivity2018EndOfMatch',
+           data: {
+              scheduleId: scheduleId,
+              team1: team1,
+              team2: team2,
+              status: status,
+              matchName: matchName,
+              startTime: startTime,
+              matchType: matchType
+           },
+           type: 'POST',
+           success: function(res) {
+             if(res.code=='0'){
+                window.location.href='./index.html';
+             }else {
+               alert(res.errorMsg);
+             }
+           }
+        });
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function myDate(date) {
+       var dates = new Date(parseInt(date)).toLocaleString('chinese', {
+        hour12: false
+       });
+       var zz = dates.split('/');
+       if (zz.length > 1) {
+        dates = dates.replace(/\//g, "-");
+       } else {
+        dates=dates.split('年')[0]+ '-' + dates.split('年')[1].split('月')[0] + '-' + dates.split('年')[1].split('月')[1].split('日')[0] + dates.split('年')[1].split('月')[1].split('日')[1];
+       }
+       var time1 = dates.split(':')[0];
+       var time2 = time1.split('-')[1] + '-' + time1.split('-')[2];
+       dates = time2 + ':' + dates.split(':')[1];
+       return dates;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+  </body>
+</html>
